@@ -20,17 +20,17 @@ public interface ArmIO {
 
     public void updateInputs(ArmIOData inputs);
 
-    public double getPositoin();
+    public double getPosition();
 
     public double getVelocity();
 
-    public double setPID();
+    public void setPID();
 
-    public double setOperatingMode();
+    public void setOperatingMode();
 
-    public double stop();
+    public void stop();
 
-    public double reset();
+    public void reset();
 
 
 }

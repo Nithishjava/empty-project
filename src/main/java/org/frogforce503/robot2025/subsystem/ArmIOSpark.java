@@ -1,7 +1,16 @@
 package org.frogforce503.robot2025.subsystem;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.wpilibj.Encoder;
+
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+
+import org.littletonrobotics.junction.AutoLog;
+
+import com.revrobotics.RelativeEncoder;
 // import com.revrobotics.spark.SparkLowLevel.MotorType;
 // import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.SparkMaxPIDController;
@@ -12,35 +21,41 @@ import com.revrobotics.SparkMaxPIDController;
 
 public class ArmIOSpark implements ArmIO{
 
-    ArmIO armIO = new ArmIO();
+    public ArmIOSpark(int CANId, double kP, double kI, double kD){
 
-    SparkMax motor = new SparkMax(0, MotorType.kBrushless);
+        SparkMax motor1 = new SparkMax(CANId, MotorType.kBrushless);
 
-    SparkMaxPIDController pid;
+        SparkClosedLoopController pid = motor1.getClosedLoopController();
+
+        SparkMaxConfig config1 = new SparkMaxConfig();
+
+        RelativeEncoder encoder1 = motor1.getEncoder();
+
+        config1.closedLoop
+            .p(kP)
+            .i(kI)
+            .d(kD);
+
+    }
+    
 
     public void updateInputs(ArmIOData inputs){}
 
-    public double getPositoin(){}
+    public double getPosition(){}
 
     public double getVelocity(){}
 
-    public double setPID(){
+    public void setPID(){}
 
-        pid = motor.getPIDController();
-        pid.setP(0.2342);
-        pid.setI(0.12126);
-        pid.setD(2.285);
-        pid.setFF(8.876);
+    public void setOperatingMode(){}
+
+    public void stop(){
+        motor1.set(0.0);
     }
 
-    public double setOperatingMode(){}
+    public void reset(){
 
-    public double stop(){
-        motor.set(0.0);
-    }
-
-    public double reset(){
-        motor.resetEncoder();
+        
     }
 }
 
