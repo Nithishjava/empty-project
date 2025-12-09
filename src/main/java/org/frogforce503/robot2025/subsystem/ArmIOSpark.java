@@ -2,6 +2,7 @@ package org.frogforce503.robot2025.subsystem;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.Encoder;
 
@@ -41,6 +42,8 @@ public class ArmIOSpark implements ArmIO{
             .p(kP)
             .i(kI)
             .d(kD);
+        
+        config1.idleMode(IdleMode.kBrake);
 
         
         motor1.configure(config1, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -48,7 +51,7 @@ public class ArmIOSpark implements ArmIO{
     }
     
 
-    public void updateInputs(ArmIOData inputs){}
+    public void updateInputs(ArmIOData inputs){}//Needs to be done
 
     public double getPosition(){
 
@@ -70,7 +73,10 @@ public class ArmIOSpark implements ArmIO{
         motor1.configure(config1, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public void setOperatingMode(){}
+    public void setOperatingMode(){
+
+        config1.idleMode(IdleMode.kCoast);
+    }
 
     public void stop(){
         encoder1.setPosition(0.0);
