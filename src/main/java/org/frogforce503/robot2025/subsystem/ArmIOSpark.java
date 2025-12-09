@@ -51,7 +51,17 @@ public class ArmIOSpark implements ArmIO{
     }
     
 
-    public void updateInputs(ArmIOData inputs){}//Needs to be done
+    public void updateInputs(ArmIOData inputs){
+
+        // inputs.temp() = motor1.getMotorTemperature();//1st method.
+        // inputs.voltage = motor1.getBusVoltage();
+        
+        // inputs.positionRadians = encoder1.getPosition();
+
+        inputs = new ArmIOData(encoder1.getPosition(), encoder1.getVelocity(), false, motor1.getMotorTemperature(), motor1.getBusVoltage(), getPosition());
+        //what is current supposed to be?
+
+    }//Needs to be done
 
     public double getPosition(){
 
