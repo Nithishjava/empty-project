@@ -4,14 +4,14 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import edu.wpi.first.wpilibj.Encoder;
+//import edu.wpi.first.wpilibj.Encoder;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 
-import org.littletonrobotics.junction.AutoLog;
+//import org.littletonrobotics.junction.AutoLog;
 
 import com.revrobotics.RelativeEncoder;
 // import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -27,16 +27,17 @@ public class ArmIOSpark implements ArmIO{
     SparkMax motor1;
     SparkMaxConfig config1;
     RelativeEncoder encoder1;
+    SparkClosedLoopController pid;
 
     public ArmIOSpark(int CANId, double kP, double kI, double kD){
 
-        SparkMax motor1 = new SparkMax(CANId, MotorType.kBrushless);
+        motor1 = new SparkMax(CANId, MotorType.kBrushless);
 
-        SparkClosedLoopController pid = motor1.getClosedLoopController();
+        pid = motor1.getClosedLoopController();
 
-        SparkMaxConfig config1 = new SparkMaxConfig();
+        config1 = new SparkMaxConfig();
 
-        RelativeEncoder encoder1 = motor1.getEncoder();
+        encoder1 = motor1.getEncoder();
 
         config1.closedLoop
             .p(kP)
@@ -58,7 +59,13 @@ public class ArmIOSpark implements ArmIO{
         
         // inputs.positionRadians = encoder1.getPosition();
 
-        inputs = new ArmIOData(encoder1.getPosition(), encoder1.getVelocity(), false, motor1.getMotorTemperature(), motor1.getBusVoltage(), getPosition());
+        inputs = new ArmIOData(
+            encoder1.getPosition(), 
+            encoder1.getVelocity(), 
+            false, 
+            motor1.getMotorTemperature(), 
+            motor1.getBusVoltage(), 
+            motor1.getOutputCurrent());
         //what is current supposed to be?
 
     }//Needs to be done
