@@ -24,7 +24,7 @@ public interface ArmIO {
 
     public double getVelocity();
 
-    public void setPID();
+    public void setPID(double kP,double kI,double kD);
 
     public void setOperatingMode();
 
