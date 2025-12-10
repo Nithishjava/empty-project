@@ -22,11 +22,21 @@ public interface ArmIO {
 
     public double getPosition();
 
+    public void setPosition(double setpoint);
+
     public double getVelocity();
 
     public void setPID(double kP,double kI,double kD);
 
-    public void setOperatingMode();
+    public void setOperatingMode(boolean isBreak);
+
+    public double getMotorTemp();
+
+    public double getVoltage();
+
+    public double getCurrent();
+
+    public boolean MotorConnected();
 
     public void stop();
 
