@@ -18,7 +18,7 @@ public interface ArmIO {
 
 
 
-    public void updateInputs(ArmIOData inputs);
+    public void updateInputs(ArmIOInputs inputs);
 
     public double getPosition();
 

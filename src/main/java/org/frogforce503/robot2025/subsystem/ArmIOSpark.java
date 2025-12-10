@@ -4,7 +4,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import edu.wpi.first.wpilibj2.command.Command;
+//import edu.wpi.first.wpilibj2.command.Command;
 
 import com.revrobotics.spark.SparkBase.ControlType;
 
@@ -19,7 +19,7 @@ import com.revrobotics.REVLibError;
 
 //import org.littletonrobotics.junction.AutoLog;
 
-import com.revrobotics.RelativeEncoder;
+//import com.revrobotics.RelativeEncoder;
 // import com.revrobotics.spark.SparkLowLevel.MotorType;
 // import com.revrobotics.spark.config.SparkMaxConfig;
 //import com.revrobotics.SparkMaxPIDController;
@@ -60,7 +60,7 @@ public class ArmIOSpark implements ArmIO{
 
     }
     
-
+    @Override
     public void updateInputs(ArmIOInputs inputs){
 
         // inputs.temp() = motor1.getMotorTemperature();//1st method.
@@ -69,8 +69,8 @@ public class ArmIOSpark implements ArmIO{
         // inputs.positionRadians = encoder1.getPosition();
 
         inputs.data = new ArmIOData(
-            encoder1.getPosition(), 
-            encoder1.getVelocity(), 
+            getPosition(), 
+            getVelocity(), 
             MotorConnected(), 
             getMotorTemp(), 
             getVoltage(), 
@@ -112,7 +112,11 @@ public class ArmIOSpark implements ArmIO{
     @Override
     public boolean MotorConnected(){
 
-        return motor1.getLastError() == REVLibError.kCANDisconnected;//I tried searcing this up in the docs, but didn't show up.
+        //return motor1.getLastError() == REVLibError.kOk;//I tried searcing this up in the docs, but didn't show up.
+        //Or
+        //return motor1.getBusVoltage()> 0.0;
+        //Or
+        return motor1.getLastError() == REVLibError.kCANDisconnected;
     }
 
     @Override
@@ -148,7 +152,7 @@ public class ArmIOSpark implements ArmIO{
 
     @Override
     public void stop(){
-        motor1.close();//Is this right??
+        motor1.stopMotor();//Is this right??
         //config1.set(0.0);
     }
 
@@ -157,6 +161,8 @@ public class ArmIOSpark implements ArmIO{
 
         motor1.configure(config1, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
+
+
 
 
 
