@@ -3,6 +3,9 @@ package org.frogforce503.robot2025.subsystem;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
+import edu.wpi.first.wpilibj2.command.Command;
+
 import com.revrobotics.spark.SparkBase.ControlType;
 
 //import edu.wpi.first.wpilibj.Encoder;
@@ -12,6 +15,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.REVLibError;
 
 //import org.littletonrobotics.junction.AutoLog;
 
@@ -108,7 +112,7 @@ public class ArmIOSpark implements ArmIO{
     @Override
     public boolean MotorConnected(){
 
-        return motor1.isConnected();//I tried searcing this up in the docs, but didn't show up.
+        return motor1.getLastError() == REVLibError.kCANDisconnected;//I tried searcing this up in the docs, but didn't show up.
     }
 
     @Override
@@ -137,6 +141,7 @@ public class ArmIOSpark implements ArmIO{
             config1.idleMode(IdleMode.kCoast);
         }
         
+        //Command idlemode = IdleMode.kBrake if isBreak else IdleMode.kCoast;
     }
 
 
