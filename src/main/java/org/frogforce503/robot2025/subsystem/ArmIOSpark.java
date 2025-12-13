@@ -2,6 +2,7 @@ package org.frogforce503.robot2025.subsystem;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 //import edu.wpi.first.wpilibj2.command.Command;
@@ -12,9 +13,11 @@ import com.revrobotics.spark.SparkBase.ControlType;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.revrobotics.REVLibError;
 
 //import org.littletonrobotics.junction.AutoLog;
@@ -30,11 +33,11 @@ import com.revrobotics.REVLibError;
 
 public class ArmIOSpark implements ArmIO{
 
-    SparkMax motor1;
-    SparkMaxConfig config1;
+    private SparkMax motor1;
+    private SparkMaxConfig config1;
     // RelativeEncoder encoder1;
-    SparkAbsoluteEncoder encoder1;
-    SparkClosedLoopController pid;
+    private SparkAbsoluteEncoder encoder1;
+    private SparkClosedLoopController pid;
 
     public ArmIOSpark(int CANId, double kP, double kI, double kD){
         //Usually stores hardware values in a seperate file
@@ -46,9 +49,13 @@ public class ArmIOSpark implements ArmIO{
         config1 = new SparkMaxConfig();
 
         encoder1 = motor1.getAbsoluteEncoder();
-        config1.absoluteEncoder.zeroOffset(0.0);//Added this after the meeting discussion with ethan
+        config1.absoluteEncoder
+            .zeroOffset(0.0)//Added this after the meeting discussion with ethan
+            .positionConversionFactor(2*Math.PI)
+            .velocityConversionFactor(2*Math.PI / 60);
 
         config1.closedLoop
+            .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
             .p(kP)
             .i(kI)
             .d(kD);
@@ -56,6 +63,11 @@ public class ArmIOSpark implements ArmIO{
         config1.idleMode(IdleMode.kBrake);
 
         
+        
+        config1.inverted(false);//Added this after vrishab talked about it
+        config1.smartCurrentLimit(40);//THis too
+        config1.voltageCompensation(12);//This too
+
         motor1.configure(config1, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     }
@@ -125,12 +137,27 @@ public class ArmIOSpark implements ArmIO{
     }
 
     @Override
-    public void setPID(double kP, double kI, double kD){
+    public void setPID(double kP, double kI, double kD, int slot, double minVolts, double maxVolts){
+        ClosedLoopSlot slots = ClosedLoopSlot.kSlot0;
+        switch (slot){
+
+            case 1:
+                slots = ClosedLoopSlot.kSlot1;
+            case 0:
+                slots = ClosedLoopSlot.kSlot0;
+            case 2:
+                slots = ClosedLoopSlot.kSlot2;
+            case 3:
+                slots = ClosedLoopSlot.kSlot3;
+                
+        }
+
 
         config1.closedLoop
-            .p(kP)
-            .i(kI)
-            .d(kD);
+            .p(kP, slots)
+            .i(kI, slots)
+            .d(kD, slots);
+            // .outputRange(minVolts, maxVolts, slot);
 
         
         motor1.configure(config1, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -146,6 +173,12 @@ public class ArmIOSpark implements ArmIO{
         }
         
         //Command idlemode = IdleMode.kBrake if isBreak else IdleMode.kCoast;
+    }
+
+    @Override
+    public void setVoltage(double voltage){
+        motor1.setVoltage(voltage);
+
     }
 
 
